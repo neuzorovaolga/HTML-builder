@@ -52,3 +52,143 @@ fs.readdir('06-build-page/assets', (err, files) => {
     });
   });
 });
+
+fs.readdir('06-build-page/styles', (err, files) => {
+  if (err) throw err;
+  fs.open('06-build-page/project-dist/style.css', 'w', (err) => {
+    if (err) throw err;
+    console.log('File created');
+  });
+  files.forEach((item) => {
+    fs.stat(`06-build-page/styles/${item}`, (err, stats) => {
+      if (err) throw err;
+      if (stats.isFile() && path.extname(item) === '.css') {
+        console.log(path.basename(item));
+        fs.readFile(`06-build-page/styles/${item}`, (err, data) => {
+          if (err) {
+            console.error(err);
+            return;
+          }
+          fs.appendFile('06-build-page/project-dist/style.css', data, (err) => {
+            if (err) {
+              console.error(err);
+              return;
+            }
+            console.log('файл записан успешно');
+          });
+        });
+      }
+    });
+  });
+});
+
+fs.open('06-build-page/project-dist/index.html', 'w', (err) => {
+  if (err) throw err;
+  console.log('Файл индекс создан');
+});
+
+fs.stat('06-build-page/template.html', (err, stats) => {
+  if (err) throw err;
+  if (stats.isFile()) {
+    fs.readFile('06-build-page/template.html', (err, data) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      fs.appendFile('06-build-page/project-dist/index.html', data, (err) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        console.log('файл записан успешно BODY');
+        //
+        fs.readFile(
+          '06-build-page/project-dist/index.html',
+          'utf8',
+          async (err, body) => {
+            if (err) {
+              console.error(err);
+            }
+            console.log(body.toString(), '1');
+            fs.readFile(
+              '06-build-page/components/header.html',
+              'utf8',
+              (err, header) => {
+                if (err) {
+                  console.error(err);
+                }
+                console.log(header.toString(), 'header');
+                body = body.replace(/\{\{header\}\}/, header);
+                fs.readFile(
+                  '06-build-page/components/articles.html',
+                  'utf8',
+                  (err, articles) => {
+                    if (err) {
+                      console.error(err);
+                    }
+                    articles.toString();
+                    body = body.replace(/\{\{articles\}\}/, articles);
+
+                    fs.readFile(
+                      '06-build-page/components/footer.html',
+                      'utf8',
+                      (err, footer) => {
+                        if (err) {
+                          console.error(err);
+                        }
+                        footer.toString();
+                        body = body.replace(/\{\{footer\}\}/, footer);
+
+                        fs.writeFile(
+                          '06-build-page/project-dist/index.html',
+                          body,
+                          (error) => console.log('Done!'),
+                        );
+                      },
+                    );
+                  },
+                );
+              },
+            );
+          },
+        );
+      });
+    });
+  }
+});
+
+// fs.readFile('06-build-page/project-dist/index.html', 'utf8', (err, body) => {
+//   if (err) {
+//     console.error(err);
+//   }
+//   console.log(body.toString());
+//   fs.readFile('06-build-page/components/header.html', 'utf8', (err, header) => {
+//     if (err) {
+//       console.error(err);
+//     }
+//     console.log(header.toString());
+//     body = body.replace(/\{\{header\}\}/, header);
+//   });
+//   fs.readFile('06-build-page/components/footer.html', 'utf8', (err, footer) => {
+//     if (err) {
+//       console.error(err);
+//     }
+//     footer.toString();
+//     body = body.replace(/\{\{footer\}\}/, footer);
+//   });
+//   fs.readFile(
+//     '06-build-page/components/articles.html',
+//     'utf8',
+//     (err, articles) => {
+//       if (err) {
+//         console.error(err);
+//       }
+//       articles.toString();
+//       body = body.replace(/\{\{articles\}\}/, articles);
+//     },
+//   );
+
+//   fs.writeFile('06-build-page/project-dist/index.html', body, (error) =>
+//     console.log('Done!'),
+//   );
+// });
