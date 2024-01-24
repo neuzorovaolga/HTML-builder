@@ -18,5 +18,7 @@ function text(question) {
     text('Enter some text: ');
   });
 }
-
+rl.on('close', function () {
+  process.stdout.write('\nGoodbye! \n');
+});
 text('Hi everybody! Enter some text: ');
