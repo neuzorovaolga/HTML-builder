@@ -13,24 +13,19 @@ fs.mkdir('04-copy-directory/files-copy', (err) => {
             `04-copy-directory/files/${item}`,
             `04-copy-directory/files-copy/${item}`,
           )
-          .catch(function (error) {
-            console.log(error);
-          });
+          .catch(() => {});
       });
     });
   }
 });
 
 fs.readdir('04-copy-directory/files', (err, files) => {
-  if (err) throw err;
   files.forEach((item) => {
     fsPromises
       .copyFile(
         `04-copy-directory/files/${item}`,
         `04-copy-directory/files-copy/${item}`,
       )
-      .catch(function (error) {
-        console.log(error);
-      });
+      .catch(() => {});
   });
 });
